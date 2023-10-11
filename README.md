@@ -6,7 +6,7 @@ It is a Robotarium package that implements the approach from the paper "Anchor-o
 
 # Video Demo
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/ged49YB1bh0/0.jpg)](https://www.youtube.com/watch?v=ged49YB1bh0)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/nTYZVhRsRGY/0.jpg)](https://www.youtube.com/watch?v=nTYZVhRsRGY)
 
 
 # Installation and Usage
