@@ -154,7 +154,7 @@ def executeCoverageScript_dynamicAP( N=6, resolution =0.1,coverageIterations=250
         if iteration>70:
             dxu[:,N] = np.array([0,0])
         dxu = uni_barrier_cert(dxu, current_robotspositions_unicycle)
-        robotarium.set_velocities((N+1), dxu)
+        robotarium.set_velocities(np.arange(N+1), dxu)
         robotarium.step()             
     
     return 
