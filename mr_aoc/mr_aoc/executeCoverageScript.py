@@ -160,8 +160,8 @@ def executeCoverageScript_function( N=6, resolution=0.1, coverageIterations=250,
                 dxu[:,N] = np.array([0,0])
         dxu = uni_barrier_cert(dxu, current_robotspositions_unicycle)
         if targetTrackingFlag:
-            robotarium.set_velocities((N+1), dxu)
+            robotarium.set_velocities(np.arange(N+1), dxu)
         else:
-            robotarium.set_velocities((N), dxu)
+            robotarium.set_velocities(np.arange(N), dxu)
         robotarium.step()             
     return 
