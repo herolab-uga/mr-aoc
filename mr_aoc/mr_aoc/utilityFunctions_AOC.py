@@ -3,16 +3,26 @@ import math
 import matplotlib.pyplot as plt
 from scipy.spatial import ConvexHull
 
+
+# get the rotation matrix for given theta value
+def get_rotation_matrix_z(theta):
+    """Constructs a rotation matrix for a rotation around the z-axis by an angle theta."""
+    return np.array([
+        [np.cos(theta), -np.sin(theta)],
+        [np.sin(theta), np.cos(theta)]
+    ])
+
 # Function to convert global positions to local positions
 def global_to_local(global_position, reference_position):
-    local_positions = (global_position - reference_position[:2]) 
-    #+random_variances
-    return local_positions
+    translated_position =  global_position[:2] - reference_position[:2]
+    rotation_matrix = get_rotation_matrix_z(reference_position[2])
+    local_position = np.dot( rotation_matrix, translated_position) 
+    return local_position
 
 # Function to convert global positions to local positions
 def local_to_global(local_position, reference_position):
-    global_position = (local_position + reference_position[:2]) 
-    #+ random_variances
+    inv_rotation_matrix = np.transpose(get_rotation_matrix_z(reference_position[2])) 
+    global_position = np.dot( inv_rotation_matrix, local_position[:2]) + reference_position[:2]
     return global_position
 
 # distance Calculation
@@ -20,12 +30,11 @@ def dist(x, y, pos):
     return math.sqrt(((pos[0]-x)**2) + ((pos[1]-y)**2))
  
 # partitionFinder
-def partitionFinder_robotariumm(ax, robotsPositions, envSize_X, envSize_Y, resolution, densityFlag, densityArray,alpha, partitionMarkerSize,globalFrame):
+def partitionFinder_robotariumm(ax, robotsPositions, envSize_X, envSize_Y, resolution, densityFlag, densityArray,alpha, partitionMarkerSize,globalFrame,robot_color):
     hull_figHandles = []
     x_global_values = np.arange(envSize_X[0], envSize_X[1]+resolution, resolution)
     y_global_values = np.arange(envSize_Y[0], envSize_Y[1]+resolution, resolution)    
     distArray = np.zeros(robotsPositions.shape[0])
-    colorList = ["red","green","blue","black","grey","orange"]
     locations = [[] for _ in range(robotsPositions.shape[0])]
     robotDensity = [[] for _ in range(robotsPositions.shape[0])]
     locationsIdx = [[] for _ in range(robotsPositions.shape[0])]
@@ -51,25 +60,32 @@ def partitionFinder_robotariumm(ax, robotsPositions, envSize_X, envSize_Y, resol
                     robotDensity[r].append(densityArray[i,j])   
 
     for r in range(robotsPositions.shape[0]):
+        if not globalFrame:
+            ax.scatter((robotsPositions[r])[0],(robotsPositions[r])[1],color=robot_color[r],marker="x",linewidth=3)
         robotsLocation = np.array(locations[r])
         if not densityFlag:
             if(robotsLocation.shape[0]>0 and robotsLocation.shape[1]>0):
-                #ax.scatter(robotsLocation[:,0], robotsLocation[:,1], color = colorList[r],marker="v",linewidths=partitionMarkerSize, alpha=alpha)
-                if globalFrame:
-                    lineHandle, = ax.plot(robotsLocation[:,0], robotsLocation[:,1], color = colorList[r],marker="v",markersize=partitionMarkerSize, linestyle="none", alpha=alpha) 
+                if ax is not None:
+                    lineHandle, = ax.plot(robotsLocation[:,0], robotsLocation[:,1], color = robot_color[r],marker="v",markersize=partitionMarkerSize, linestyle="none", alpha=alpha, zorder=-1) 
                     hull_figHandles.append(lineHandle)
-                    text_handle =  ax.text((robotsPositions[r])[0]+0.09,(robotsPositions[r])[1]+0.05,str(r+1),color="black",fontsize=18)
+                    if globalFrame:
+                        text_handle =  ax.text((robotsPositions[r])[0]+0.09,(robotsPositions[r])[1]+0.05,str(r+1),color=robot_color[r],fontweight='bold',fontsize=14)
+                    else:
+                        text_handle =  ax.text((robotsPositions[r])[0]+0.02,(robotsPositions[r])[1]+0.02,str(r+1),color=robot_color[r],fontweight='bold',fontsize=17)
                     text_handles.append(text_handle)
         else:
-            if(globalFrame):
+            if ax is not None:
                 hull = ConvexHull(robotsLocation)
                 # Get the vertices of the convex hull
                 boundary_points = robotsLocation[hull.vertices]
                 # Extract x and y coordinates
                 x, y = boundary_points[:, 0], boundary_points[:, 1]
-                hullHandle, =  ( ax.plot(x, y, marker='None', linestyle='-', color="black", markersize=6, linewidth =8))
+                hullHandle, =  ( ax.plot(x, y, marker='None', linestyle='-', color="black",linewidth =2))
                 hull_figHandles.append(hullHandle)
-                text_handle =  ax.text((robotsPositions[r])[0]+0.09,(robotsPositions[r])[1]+0.05,str(r+1),color="black",fontsize=18)
+                if globalFrame:
+                    text_handle =  ax.text((robotsPositions[r])[0]+0.09,(robotsPositions[r])[1]+0.05,str(r+1),color=robot_color[r],fontweight='bold',fontsize=12)
+                else:
+                    text_handle =  ax.text((robotsPositions[r])[0]+0.02,(robotsPositions[r])[1]+0.02,str(r+1),color=robot_color[r],fontweight='bold',fontsize=15)
                 text_handles.append(text_handle)
     #ax.set(xlim=(envSize_X[0], envSize_X[1]), ylim=(envSize_Y[0], envSize_Y[1]))
     Mass = np.zeros(robotsPositions.shape[0])
@@ -119,5 +135,5 @@ def getDensityArray_robotarium(ax,x_min,x_max,y_min,y_max, resolution,u1, sigmaV
         densityArray.ravel()[i] = constant_term * (np.exp(exponent1))
     density = densityArray.reshape(X.shape)
     if displayFlag:
-        handle = ax.pcolor(X, Y, density,shading="auto")
+        handle = ax.pcolor(X, Y, density,shading="auto",zorder=-1)
     return density,handle
