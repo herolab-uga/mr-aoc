@@ -39,14 +39,7 @@ def partitionFinder_robotariumm(ax, robotsPositions, envSize_X, envSize_Y, resol
     robotDensity = [[] for _ in range(robotsPositions.shape[0])]
     locationsIdx = [[] for _ in range(robotsPositions.shape[0])]
     text_handles = []
-    if densityFlag:
-        if(densityArray.shape[0]>x_global_values.shape[0] or densityArray.shape[1]>y_global_values.shape[0]):
-            densityArray = densityArray[:x_global_values.shape[0],:y_global_values.shape[0]]
-        if(densityArray.shape[0]<x_global_values.shape[0] or densityArray.shape[1]<y_global_values.shape[0]):
-            x_global_values = x_global_values[:densityArray.shape[0]]
-            y_global_values = x_global_values[:densityArray.shape[1]]
 
-    
     for i, x_pos in enumerate(x_global_values):
         for j, y_pos in enumerate(y_global_values):
             for r in range(robotsPositions.shape[0]):    
@@ -61,7 +54,8 @@ def partitionFinder_robotariumm(ax, robotsPositions, envSize_X, envSize_Y, resol
 
     for r in range(robotsPositions.shape[0]):
         if not globalFrame:
-            ax.scatter((robotsPositions[r])[0],(robotsPositions[r])[1],color=robot_color[r],marker="x",linewidth=3)
+            if ax is not None:
+                ax.scatter((robotsPositions[r])[0],(robotsPositions[r])[1],color=robot_color[r],marker="x",linewidth=3)
         robotsLocation = np.array(locations[r])
         if not densityFlag:
             if(robotsLocation.shape[0]>0 and robotsLocation.shape[1]>0):

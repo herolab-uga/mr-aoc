@@ -15,7 +15,7 @@ def executeCoverageScript_function( N=6, resolution=0.1, coverageIterations=250,
         distanceToCentroidThreshold = -0.1
         densityFlag = True
     else:
-        distanceToCentroidThreshold = 0.1
+        distanceToCentroidThreshold = 0.07
     robotRadius = 0.1
     ROBOT_COLOR = {0: "red", 1: "green", 2: "grey", 3:"blue",4:"orange",5:"black"}
     colorList =  [ROBOT_COLOR[key] for key in range(N)]
@@ -65,7 +65,8 @@ def executeCoverageScript_function( N=6, resolution=0.1, coverageIterations=250,
     globalDensityArray = []
     localDensityArray = [[] for _ in range(N)]
     global_densityHandle=""
-    
+    ax_robotariumFig.set_xlim(x_min-0.2,x_max+0.2) 
+    ax_robotariumFig.set_ylim(y_min-0.2,y_max+0.2)      
 
     if showLocalFOR:
         ax_local_coverage = []
