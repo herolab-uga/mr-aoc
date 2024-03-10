@@ -120,9 +120,15 @@ def partitionFinder_robotariumm(ax, robotsPositions, envSize_X, envSize_Y, resol
     
     
 def getDensityArray_robotarium(ax,x_min,x_max,y_min,y_max, resolution,u1, sigmaValue,displayFlag):
-    x = np.arange(x_min, x_max + resolution, resolution)
-    y = np.arange(y_min, y_max + resolution, resolution)
-    X, Y = np.meshgrid(x, y)
+    x_vals = np.arange(x_min, x_max + resolution, resolution) 
+    y_vals = np.arange(y_min, y_max + resolution, resolution)
+    X = np.zeros((len(x_vals), len(y_vals)))
+    Y = np.zeros((len(x_vals), len(y_vals)))
+    # Fill X and Y arrays using for loops
+    for i, x in enumerate(x_vals):
+        for j, y in enumerate(y_vals):
+            X[i, j] = x
+            Y[i, j] = y
     sigma = sigmaValue * np.eye(2)
     covInv = np.linalg.inv(sigma)
     densityArray = np.zeros(X.shape)

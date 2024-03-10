@@ -4,7 +4,7 @@ import numpy as np
 import random
 N = 4
 densFlag = False
-targetTrackingFlag = False
+targetTrackingFlag = True
 dynamicAP = True
 envRadius_diff = np.array([random.uniform(0, 0.2) for _ in range(N)])
 # For better understanding of dynamicAP, it is recommended to comment line 121,122 (sets x and y lim for workspace) in installed rps/robotarium_abc.py

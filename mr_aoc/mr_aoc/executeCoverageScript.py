@@ -15,7 +15,7 @@ def executeCoverageScript_function( N=6, resolution=0.1, coverageIterations=250,
         distanceToCentroidThreshold = -0.1
         densityFlag = True
     else:
-        distanceToCentroidThreshold = 0.05
+        distanceToCentroidThreshold = 0.1
     robotRadius = 0.1
     ROBOT_COLOR = {0: "red", 1: "green", 2: "grey", 3:"blue",4:"orange",5:"black"}
     colorList =  [ROBOT_COLOR[key] for key in range(N)]
@@ -26,15 +26,15 @@ def executeCoverageScript_function( N=6, resolution=0.1, coverageIterations=250,
         else:
             initial_conditions = np.array(np.mat(' -0.9 0.9 0.5 -0.5; 0.0 0.0 0.0 0.0; 0 3.14 0.785 1.57'))
             #initial_conditions = np.array(np.mat(' -0.9 0.9 0.5 -0.5; 0.0 0.0 0.0 0.0; 0 0.785 0 0'))
-        partitionTransparency = 0.1
-        partitionMarkerSize = 6
-        x_min, x_max = -1, 1
-        y_min, y_max = -1, 1
-        sigmaVal = 0.4
-        u1 = np.array([0.85, 0.85])
-        envRadius = 1
-        
-        AP_global_position =  np.array([0,0])
+    partitionTransparency = 0.1
+    partitionMarkerSize = 6
+    x_min, x_max = -1, 1
+    y_min, y_max = -1, 1
+    sigmaVal = 0.4
+    u1 = np.array([0.85, 0.85])
+    envRadius = 1
+    envRadius_robots = np.ones(N)*envRadius + envRadius_diff    
+    AP_global_position =  np.array([0,0])
     # initialize envRadius_updated
     envRadius_updated = envRadius_robots
     # make an independent copy of initial robots positions to calculate local FoR locations
